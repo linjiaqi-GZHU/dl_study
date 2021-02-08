@@ -48,7 +48,7 @@ def show_batch_img(batch_size,tp="train"):
 	plt.show()
 
 
-
+#jqssb
 
 
 
