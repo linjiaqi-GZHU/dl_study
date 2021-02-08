@@ -13,8 +13,8 @@ def label2name(num):
 
 #功能：显示定量训练集的图片
 def show_batch_img(batch_size,tp="train"):                     
-	x_train = np.load("./data/x_train.npy")
-	y_train = np.load("./data/y_train.npy")       
+	x_train = np.load("./data/x_"+tp+".npy")
+	y_train = np.load("./data/y_"+tp+".npy")       
 
 
 	#训练图片合集
