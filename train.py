@@ -1,37 +1,31 @@
-#from net.netcode import Net
-
-
-
-#第一步，构建一个dataloader    ---家琪,李霞
-#dataloader = Dataloader(train_data,shuffle=true,batch_size=64)
-
-
-#第二不，导入模型，放入gpu      ---家琪
-
-
-#第二步，声明一些函数，loss funcation optimizer  ---李霞
-#y_true y_predict
-
-#第三步，训练循环，用gpu  ---家琪李霞
-
-
-#第四步，保存模型到./model---李霞  结构加参数
-
-
-
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import numpy as np
 
-
+import torch.utils.data as Data
 #第一步，构建一个dataloader   
+#read npy
+x_train = np.load("path").astype("float32") #(n,img_w,img_h,rgb)
+y_train = np.load("path")
+ #(n,1)  ---> (n,1,10)
+
+#x_test 
+#y_test
+
 
 # 创建一个转换器，将torchvision数据集的输出范围[0,1]转换为归一化范围的张量[-1,1]。
 transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])   
+x_train = torch.Tensor(np.array([transform(img).numpy() for img in x_train]))
+num_classes = 10
+y_train = y_train.type(torch.int64)
+y_train = torch.zeros(y_train.shape[0],10).scatter_(1,y_train,1)
 
 # 创建训练集
 #trainset = torchvision.datasets.CIFAR10(root='./data', train=True,download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(x_train), batch_size=5,shuffle=True, num_workers=2)
+train_dataset = Data.TensorDataset(x_train,y_train)
+#x_train: dataset   normal   shape (sample,img_w,img_h,rgb)
+trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=5,shuffle=True, num_workers=2)
 
 # 创建测试集
 #testset = torchvision.datasets.CIFAR10(root='./data', train=False,download=True, transform=transform)
@@ -42,10 +36,10 @@ classes = ('plane', 'car', 'bird', 'cat','deer', 'dog', 'frog', 'horse', 'ship',
 
 
 #第二步，导入模型，放入gpu 
-import netcode
+from net.netcode import Net
 
 net = Net()
-#net.cuda()
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Assuming that we are on a CUDA machine, this should print a CUDA device:
@@ -56,7 +50,7 @@ net.to(device)
 
 #第二步，声明一些函数，loss funcation optimizer 
 import torch.optim as optim
-
+import torch.nn as nn
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
