@@ -131,3 +131,6 @@ dmypy.json
 
 /data/*
 down.py
+
+/jupyter/data/*
+/model/*.pt
